@@ -10,180 +10,191 @@
 **/
 
 var status = -1;
-var eQuestChoices = new Array (1302064,1312032,1322054,1332055,1332056,1372034,1382039,1402039,1412027,1422029,1432040,1442051,
-								1452045,1462040,1472055,
-								1092045,1092046,1092047,
-						//頭盔開始
-						1002508,1002509,1002510,1002511
+var job_code;
 
-						); 
 
-var eQuestPrizes = new Array();
-
-var requiredItemArr = new Array(
-					[1302020,4001126],
-					[1412011,4001126],
-					[1422014,4001126],
-					[1332025,4001126],
-					[1332025,4001126],
-					[1382009,4001126],
-					[1382012,4001126],
-					[1302020,4001126],
-					[1412011,4001126],
-					[1412014,4001126],
-					[1432012,4001126],
-					[1442024,4001126],
-					[1452022,4001126],
-					[1462019,4001126],
-					[1472030,4001126],
-					//盾牌開始
-					[1092030,4001126],
-					[1092030,4001126],
-					[1092030,4001126],
-					//頭盔開始
-					[4001126],
-					[4001126,1002508],
-					[4001126,1002509],
-					[4001126,1002510]
-					);
-var requiredItemNumArr = new Array(
-					[1,2000],
-					[1,1500],
-					[1,1500],
-					[1,2000],
-					[1,2000],
-					[1,2000],
-					[1,1500],
-					[1,2000],
-					[1,1500],
-					[1,1500],
-					[1,2000],
-					[1,1500],
-					[1,2000],
-					[1,2000],
-					[1,2000],
-					//盾牌開始
-					[1,2000],
-					[1,2000],
-					[1,2000],
-					//楓葉頭盔
-					[100],
-					[200,1],
-					[300,1],
-					[400,1]
-					);
-var requiredMoneyArr = new Array(50000,50000,50000,50000,50000,50000,50000,50000,50000,50000,50000,50000,50000,50000,50000
-						//盾牌開始
-						,500000,500000,500000
-						//頭盔開始
-						,500,5000,50000,500000
-
-								);
-var Allscroll = new Array(2040315,2040912,2043013,2043108,2043208,2043308,2043708,
-					2043808,2044008,2044108,2044208,2044308,2044408,2044508,2044608,2044708
-					);
-								
-var requiredItem  = 0;
-
-var requiredItemNum = 0;
-
-var lastSelection = -1;
-
-var remoney = 0;
-
-var reward;
-
-var itemSet;
-
+function start() {
+    action(1, 0, 0);
+}
 
 function action(mode, type, selection) {
-	if (status == 2 && mode != 1 ) {
-		cm.sendOk("好好慶祝吧!有問題歡迎隨時找我～");
-		cm.safeDispose();
-		return;
-	}
+	if (mode == 1) {
 	status++;
-
-    if (status == 0) {
-		var eQuestChoice = makeChoices(eQuestChoices);
-		cm.sendSimple(eQuestChoice);
-    } else if (status == 1){
-		if(selection == 23){
-			cm.sendYesNo("你確定要兌換#b週年慶卷軸#k嗎?\r\n需要#b#v4001126##t4001126#300個#k\r\n" );
-			status++;
-		}else{
-			requiredItem = requiredItemArr[selection];
-			requiredItemNum = requiredItemNumArr[selection];
-			reward = eQuestChoices[selection];
-			remoney = requiredMoneyArr[selection];
-			var eRequired = makeRequire(requiredItem,requiredItemNum,reward,remoney);
-			cm.sendSimple(eRequired);
+    } else {
+	cm.dispose();
+		return ;
+    }
+	if (status == 0) {
+	    cm.sendYesNo("因為轉職任務bug太多所以我就來幫大家轉職了，請問是否要進入轉職流程？");
+	} 
+	else if(status == 1) {
+		job_code =cm.getJob();
+		var lv = cm.getPlayerStat("LVL");
+		var changed = 0;
+		if(job_code>700 && job_code<950){
+		cm.sendSimple("您已經是GM，請利用!job指令更換職業!");
+		cm.dispose();
 		}
-		lastSelection = selection;
-	}else if(status == 2){	
-		cm.sendYesNo("你確定你要製作#b#v"+ reward + "##t" + reward +"##k嗎?\r\n" );
-    }else if(status == 3){
-		if(lastSelection == 23){
-			itemSet = (Math.floor(Math.random() * Allscroll.length));
-			reward = Allscroll[itemSet];
-			if(!cm.haveItem(4001126,300)){
-					cm.sendOk("你的楓葉不夠\r\n" );
-					cm.dispose();
-					return ;
-			}
-			if(!cm.canHold(reward)){
-				cm.sendOk("你的物品欄已經滿了！\r\n" );
-				cm.dispose();
-				return ;
-			}
-			cm.gainItem(4001126,-300);
-			cm.gainItem(reward,1);
-			cm.sendOk("希望您開心！\r\n" );
+		if(job_code==0){
+			cm.sendSimple("您想轉職成為...？ \r\n#L0#戰士#l\r\n#L1#法師#l\r\n#L2#弓箭手#l\r\n#L3#盜賊#l\r\n#L4#海盜#l");
+		}
+		if(job_code==1000){
+			cm.sendSimple("您想轉職成為...？ \r\n#L0#聖魂劍士#l\r\n#L1#烈焰巫師#l\r\n#L2#破風使者#l\r\n#L3#暗夜行者#l\r\n#L4#閃雷悍將#l");
+		}
+		else if(job_code%10==2){
+			cm.sendSimple("已經是四轉職業囉...");
 			cm.dispose();
-			
-		}else{
-			for(var i = 0 ; i < requiredItem.length ; i++){
-				if(!cm.haveItem(requiredItem[i],requiredItemNum[i])){
-					cm.sendOk("還沒收集完成嗎？\r\n" );
+		}
+		else if(job_code>1000){
+			if(job_code%100==0){
+				if(lv>=30){
+					job_code+=10;
+					cm.changeJob(job_code);
+					cm.sendSimple("轉職完成!");
 					cm.dispose();
-					return ;
+				}
+				else{
+					cm.sendSimple("等級還不夠哦。");
 				}
 			}
-			if(cm.getMeso() < remoney){
-				cm.sendOk("你的錢不夠！\r\n" );
+			else if(job_code%10==0){
+				if(lv>=70){
+					job_code+=1;
+					cm.changeJob(job_code);
+					cm.sendSimple("轉職完成!");
+					cm.dispose();
+				}
+				else{
+					cm.sendSimple("等級還不夠哦。");
+					cm.dispose();
+				}
+			}
+			else if(job_code%10==1){
+				if(lv>=120){
+					job_code+=1;
+					cm.changeJob(job_code);
+					cm.sendSimple("轉職完成!");
+					cm.dispose();
+				}
+				else{
+					cm.sendSimple("等級還不夠哦。");
+					cm.dispose();
+				}
+			}
+		}
+		else if(job_code%100==0){
+			if(lv<30) cm.sendSimple("等級還不夠哦。");
+			else{
+			if(job_code==100){
+			cm.sendSimple("您想轉職成為...？\r\n#L0#狂戰士#l\r\n#L1#見習騎士#l\r\n#L2#槍騎兵#l");
+			}
+			else if(job_code==200){
+			cm.sendSimple("您想轉職成為...？\r\n#L0#巫師（火、毒）#l\r\n#L1#巫師（冰、雷）#l\r\n#L2#僧侶#l");
+			}
+			else if(job_code==300){
+			cm.sendSimple("您想轉職成為...？\r\n#L0#獵人#l\r\n#L1#弩弓手#l");
+			}
+			else if(job_code==400){
+			cm.sendSimple("您想轉職成為...？\r\n#L0#刺客#l\r\n#L1#俠盜#l");
+			}
+			else if(job_code==500){
+			cm.sendSimple("您想轉職成為...？\r\n#L0#打手#l\r\n#L1#槍手#l");
+			}
+			}
+		}
+		else if(job_code>0 && job_code<700){
+			if( job_code%10 ==0){  //冒險者三轉
+				if(lv>=70){
+				job_code+=1;
+				cm.changeJob(job_code);
+				cm.sendSimple("轉職完成!");
 				cm.dispose();
-				return ;
+				}
+				else{
+					cm.sendSimple("等級還沒到哦");
+					cm.dispose();
+				}
 			}
-			if(!cm.canHold(reward)){
-				cm.sendOk("你的物品欄已經滿了！\r\n" );
+			if( job_code%10 ==1){  //冒險者四轉
+				if(lv>=120){
+				job_code+=1;
+				cm.changeJob(job_code);
+				cm.sendSimple("轉職完成!");
 				cm.dispose();
-				return ;
+				}
+				else{
+					cm.sendSimple("等級還沒到哦");
+					cm.dispose();
+				}
 			}
-			cm.gainMeso(-remoney);
-			for(var i=0 ; i < requiredItem.length ; i++ ){
-				cm.gainItem(requiredItem[i] , -requiredItemNum[i]);
-			}
-			cm.gainItem(reward,1,true);
-			cm.sendOk("完成囉！繼續欣賞美麗的楓葉吧！\r\n" );
+		}
+		else{
+			cm.sendSimple("oops,看樣子你的職業被GM排擠了，麻煩請回報管理員。");
 			cm.dispose();
 		}
 	}
-}
-
-function makeChoices(a){
-    var result  = "這個世界充滿了美麗的#b#v4001126##t4001126##k\r\n若是你收集了足夠的#b#v4001126##t4001126##k，還可以和我交換禮物呢!\r\n";
-    for (var x = 0; x< a.length; x++){
-		result += " #L" + x + "##v" + a[x] + "##t" + a[x] + "##l\r\n";
-    }
-	result += "#L23##b我想兌換週年慶卷軸...#k#l\r\n";
-    return result;
-}
-
-function makeRequire(a,b,re,m){
-    var result  = "注意！做出來的物品#b素質都是隨機#k的唷~\r\n製作#b#v"+re+"##t"+re+"##k需要以下物品：\r\n\r\n";
-    for (var x = 0; x< a.length; x++){
-		result += "#v" + a[x] + "##t" + a[x] + "# " + b[x]+ "個#l\r\n";
-    }
-	result +="#fUI/UIWindow.img/QuestIcon/7/0##b"+m+"#k\r\n";
-    return result;
+	if(status==2){
+		if(job_code==0){
+			if(selection == 0){
+				cm.changeJob(100);
+				cm.sendSimple("轉職完成!");
+				cm.dispose();
+			}
+			else if(selection == 1){
+				cm.changeJob(200);
+				cm.sendSimple("轉職完成!");
+				cm.dispose();
+			}
+			else if(selection == 2){
+				cm.changeJob(300);
+				cm.sendSimple("轉職完成!");
+				cm.dispose();
+			}
+			else if(selection == 3){
+				cm.changeJob(400);
+				cm.sendSimple("轉職完成!");
+				cm.dispose();
+			}
+			else if(selection == 4){
+				cm.changeJob(500);
+				cm.sendSimple("轉職完成!");
+				cm.dispose();
+			}
+		}
+		else if(job_code==1000){
+			if(selection == 0){
+				cm.changeJob(1100);
+				cm.sendSimple("轉職完成!");
+				cm.dispose();
+			}
+			else if(selection == 1){
+				cm.changeJob(1200);
+				cm.sendSimple("轉職完成!");
+				cm.dispose();
+			}
+			else if(selection == 2){
+				cm.changeJob(1300);
+				cm.sendSimple("轉職完成!");
+				cm.dispose();
+			}
+			else if(selection == 3){
+				cm.changeJob(1400);
+				cm.sendSimple("轉職完成!");
+				cm.dispose();
+			}
+			else if(selection == 4){
+				cm.changeJob(1500);
+				cm.sendSimple("轉職完成!");
+				cm.dispose();
+			}
+		}
+		else{
+			job_code=cm.getJob();
+			job_code+=(selection+1)*10;
+			cm.changeJob(job_code);
+			cm.sendSimple("轉職完成!");
+			cm.dispose();
+		}
+		
+	}
 }

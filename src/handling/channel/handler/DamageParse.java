@@ -757,7 +757,7 @@ public class DamageParse {
 
     private static double CalculateMaxWeaponDamagePerHit(final MapleCharacter player, final MapleMonster monster, final AttackInfo attack, final ISkill theSkill, final MapleStatEffect attackEffect, double maximumDamageToMonster, final Integer CriticalDamagePercent) {
         if (player.getMapId() / 1000000 == 914) { //aran
-            return 199999;
+            return 1999999;
         }
         List<Element> elements = new ArrayList<Element>();
         boolean defined = false;
@@ -786,19 +786,19 @@ public class DamageParse {
                     defined = true;
                     break;
                 case 4331003: //Owl Spirit
-                    maximumDamageToMonster = (monster.getStats().isBoss() ? 199999 : monster.getHp());
+                    maximumDamageToMonster = (monster.getStats().isBoss() ? 1999999 : monster.getHp());
                     defined = true;
                     break;
                 case 3221007: // Sniping
-                    maximumDamageToMonster = (monster.getStats().isBoss() ? 199999 : monster.getMobMaxHp());
+                    maximumDamageToMonster = (monster.getStats().isBoss() ? 1999999 : monster.getMobMaxHp());
                     defined = true;
                     break;
                 case 1221011://Heavens Hammer
-                    maximumDamageToMonster = (monster.getStats().isBoss() ? 199999 : monster.getHp() - 1);
+                    maximumDamageToMonster = (monster.getStats().isBoss() ? 1999999 : monster.getHp() - 1);
                     defined = true;
                     break;
                 case 4211006: // Meso Explosion
-                    maximumDamageToMonster = 750000;
+                    maximumDamageToMonster = 7500000;
                     defined = true;
                     break;
                 case 1009: // Bamboo Trust

@@ -11,7 +11,7 @@ function scheduleNew() {
     cal.set(java.util.Calendar.SECOND, 0);
     var nextTime = cal.getTimeInMillis();
     while (nextTime <= java.lang.System.currentTimeMillis()) {
-        nextTime += 1000 * 3600;
+        nextTime += 1000 * 30;
     }
     autoSave = em.scheduleAtTimestamp("start", nextTime);
 }
